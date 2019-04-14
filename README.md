@@ -9,7 +9,7 @@ pip install reqests argparse
 ```
 
 ## Command line usage
-- Rename `config.example.yaml` to `config.yaml` & fill out the `email` & `password`
+- Copy `config.example.yaml` to `config.yaml` & fill out the `email` & `password`
 - Examples:
 ```
 python digistorage.py -h
