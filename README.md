@@ -12,6 +12,7 @@ pip install reqests argparse
 - Rename `config.example.yaml` to `config.yaml` & fill out the `email` & `password`
 - Examples:
 ```
+python digistorage.py -h
 python digistorage.py --upload=README.md --remote_path=
 python digistorage.py --info --remote_path=README.md
 python digistorage.py --mkdir --remote_path=new_folder
