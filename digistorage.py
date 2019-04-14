@@ -1,3 +1,4 @@
+import json
 import requests
 import yaml
 
@@ -38,19 +39,32 @@ class DigiStorageApi:
     def upload(self):
         pass
 
-    def upload_file(self, file_path_on_disk, remote_path_to_upload_to=None):
-        if remote_path_to_upload_to is None:
-            remote_path_to_upload_to = file_path_on_disk
-        with open(file_path_on_disk) as f:
-            content = f.read()
+    def upload_file(self, file_path, remote_path, remote_file_name):
+        """ remote_path = path without the file name, with no / at the beginning """
+        with open(file_path) as f:
             r = self.session.post(API_BASE + '/content/api/v2/mounts/' + self.mount['id'] + '/files/put',
-                              params={'path': '/' + remote_path_to_upload_to}, files={
-                    'file': (file_path_on_disk, content)
-                })
+                                  params={'path': '/' + remote_path},
+                                  files={'file': (remote_file_name, f.read())}
+                                  )
             f.close()
+            if r.status_code != 200:
+                raise Exception('Error uploading file')
+            return r
+
+    def create_folder(self, remote_path):
+        """ remote_path = full path containing the folder name, with no / at the beginning """
+        r = self.session.post(API_BASE + '/api/v2/mounts/' + self.mount['id'] + '/files/folder',
+                              params={'path': '/'},
+                              data=json.dumps({'name': remote_path}),
+                              headers={'content-type': 'application/json'}
+                              )
+        if r.status_code != 200:
+            raise Exception('Error creating folder')
+        return r
 
 
 if __name__ == '__main__':
     dsa = DigiStorageApi()
-    dsa.upload_file('README.md')
+    dsa.create_folder('caca')
+    dsa.upload_file('README.md', remote_path='caca', remote_file_name='README.md')
     pass
