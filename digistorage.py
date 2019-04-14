@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import json
 import os
@@ -132,11 +133,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--upload', type=str, required=False,
                         help='Path to file/folder to upload')
-    parser.add_argument('--info', required=False,
-                        help='Pass this param to get the info for the remote-path')
-    parser.add_argument('--mkdir', required=False,
+    parser.add_argument('--info', required=False, action='store_true',
+                        help='Pass this param to get the info for the remote_path')
+    parser.add_argument('--mkdir', required=False, action='store_true',
                         help='Pass this param to create a directory at the remote-path')
-    parser.add_argument('--rm', required=False,
+    parser.add_argument('--rm', required=False, action='store_true',
                         help='Pass this param to delete the remote-path')
     parser.add_argument('--remote_path', type=str, required=True,
                         help='Remote path to execute the desired action on')

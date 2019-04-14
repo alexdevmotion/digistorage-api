@@ -1,16 +1,24 @@
 # digistorage-api
-A Python API that enables basic available via the [DigiStorage REST API for Developers](https://storage.rcs-rds.ro/help/developers/api).
+A Python API that enables basic features provided via the [DigiStorage REST API for Developers](https://storage.rcs-rds.ro/help/developers/api).
 
 ## Prerequisites
 - Python 3.6+ (may work on older versions, but didn't test)
 - Required packages:
 ```
-pip install reqests TODO
+pip install reqests argparse
 ```
 
-## Usage
-- Rename `config.example.yaml` to `config.yaml`
-- Fill out `config.yaml`
+## Command line usage
+- Rename `config.example.yaml` to `config.yaml` & fill out the `email` & `password`
+- Examples:
 ```
-TODO
+python digistorage.py --upload=README.md --remote_path=
+python digistorage.py --info --remote_path=README.md
+python digistorage.py --mkdir --remote_path=new_folder
+python digistorage.py --rm --remote_path=new_folder
 ```
+
+## Python API usage
+- Create an instance of the `DigiStorageApi` class
+- You can manually pass the `email` & `password` to the `DigiStorageApi` constructor or use the same `config.yaml` approach
+- Read the docs for more info
