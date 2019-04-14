@@ -1,26 +1,36 @@
+import argparse
 import json
 import os
 import requests
 import yaml
 
 API_BASE = 'https://storage.rcs-rds.ro'
-DEFAULT_MOUNT_NAME = 'Digi Cloud'
 
 
 class DigiStorageApi:
-    def __init__(self, mount_name=DEFAULT_MOUNT_NAME):
-        self.config = yaml.load(open('config.yaml'))
+    def __init__(self, mount_name='Digi Cloud', path_to_config='config.yaml', email=None, password=None):
+        """
+        :param mount_name: the remote folder to connect to
+        :param path_to_config: the yaml config file
+        :param email: (alternatively, if you don't want to use a config file)
+        :param password: (alternatively, if you don't want to use a config file)
+        """
+        if email is None or password is None:
+            config = yaml.load(open(path_to_config))
+            email = config['email']
+            password = config['password']
         self.session = requests.Session()
-        self.token = self.__init_token()
+        self.token = self.__init_token(email, password)
         self.session.headers['Authorization'] = 'Token ' + self.token
         self.mounts = self.__init_mounts()
         self.mount = self.__get_mount_by_name(mount_name)
 
-    def __init_token(self):
+    @staticmethod
+    def __init_token(email, password):
         headers = {
             'Accept': '*/*',
-            'X-Koofr-Password': self.config['password'],
-            'X-Koofr-Email': self.config['email']
+            'X-Koofr-Password': password,
+            'X-Koofr-Email': email
         }
         r = requests.get(API_BASE + '/token', headers=headers)
         if r.status_code != 200:
@@ -119,10 +129,26 @@ class DigiStorageApi:
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--upload', type=str, required=False,
+                        help='Path to file/folder to upload')
+    parser.add_argument('--info', required=False,
+                        help='Pass this param to get the info for the remote-path')
+    parser.add_argument('--mkdir', required=False,
+                        help='Pass this param to create a directory at the remote-path')
+    parser.add_argument('--rm', required=False,
+                        help='Pass this param to delete the remote-path')
+    parser.add_argument('--remote_path', type=str, required=True,
+                        help='Remote path to execute the desired action on')
+
+    args = parser.parse_args()
     dsa = DigiStorageApi()
-    # dsa.create_folder('caca')
-    # dsa.upload_file('README.md', remote_path='caca')
-    # info = dsa.file_folder_info('caca/README.mdd')
-    # dsa.upload('README.md', remote_path='')
-    dsa.remove_file_folder('README.md')
-    pass
+
+    if args.upload:
+        dsa.upload(args.upload, remote_path=args.remote_path)
+    elif args.info:
+        print(dsa.file_folder_info(args.remote_path))
+    elif args.mkdir:
+        dsa.create_folder(args.remote_path)
+    elif args.rm:
+        dsa.remove_file_folder(args.remote_path)
