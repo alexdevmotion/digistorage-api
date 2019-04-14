@@ -69,7 +69,7 @@ class DigiStorageApi:
         :return: response object (will raise exception on error)
         """
         if remote_file_name is None:
-            file_path_head, remote_file_name = os.path.split(file_path)
+            remote_file_name = os.path.basename(file_path)
         with open(file_path) as f:
             r = self.session.post(API_BASE + '/content/api/v2/mounts/' + self.mount['id'] + '/files/put',
                                   params={'path': '/' + remote_path},
