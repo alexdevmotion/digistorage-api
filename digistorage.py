@@ -70,7 +70,7 @@ class DigiStorageApi:
         """
         if remote_file_name is None:
             remote_file_name = os.path.basename(file_path)
-        with open(file_path) as f:
+        with open(file_path, 'rb') as f:
             r = self.session.post(API_BASE + '/content/api/v2/mounts/' + self.mount['id'] + '/files/put',
                                   params={'path': '/' + remote_path},
                                   files={'file': (remote_file_name, f.read())}
