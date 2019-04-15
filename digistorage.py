@@ -11,6 +11,7 @@ API_BASE = 'https://storage.rcs-rds.ro'
 class DigiStorageApiException(Exception):
     pass
 
+
 class DigiStorageApi:
     def __init__(self, mount_name='Digi Cloud', path_to_config='config.yaml', email=None, password=None):
         """
